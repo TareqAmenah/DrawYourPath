@@ -117,6 +117,18 @@
                 android:textSize="18sp" />
         </LinearLayout>
 
+        <Button
+            android:id="@+id/send_sms_button"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            card_view:layout_constraintBottom_toBottomOf="parent"
+            card_view:layout_constraintEnd_toEndOf="parent"
+            card_view:layout_constraintStart_toStartOf="parent"
+            android:background="#2E2E2E"
+            android:text="Send as SMS"
+            android:textColor="#ffff"
+            android:layout_marginTop="4dp"
+            card_view:layout_constraintTop_toBottomOf="@id/linearLayout2" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.cardview.widget.CardView>

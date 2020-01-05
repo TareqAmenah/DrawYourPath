@@ -17,5 +17,11 @@
         android:label="@string/menu_gallery"
         tools:layout="@layout/fragment_paths" />
 
+    <activity
+        android:id="@+id/mapFragment"
+        android:name="com.tradinos.drawyourpath.ui.map.MapFragment"
+        android:label="activity_map_fragment"
+        tools:layout="@layout/map_fragment" />
+
 
 </navigation>

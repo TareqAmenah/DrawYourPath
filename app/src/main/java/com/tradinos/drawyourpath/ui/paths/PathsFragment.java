@@ -30,7 +30,6 @@ public class PathsFragment extends Fragment {
     private PathsAdapter adapter;
 
 
-
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,4 +74,6 @@ public class PathsFragment extends Fragment {
         super.onResume();
         ((MainActivity)getActivity()).bottom_sheet.setVisibility(View.INVISIBLE);
     }
+
+
 }

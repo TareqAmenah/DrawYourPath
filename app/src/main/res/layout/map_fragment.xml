@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.map.MapFragment">
+
+
+    <fragment
+        android:id="@+id/map"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <FrameLayout
+        android:id="@+id/fram_map"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" >
+        <Button
+            android:id="@+id/btn_draw_State"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Free Draw" />
+    </FrameLayout>
+
+    <!--
+    <android.widget.SearchView
+        android:drawableStart="@drawable/ic_search_black_24dp"
+        android:layout_marginStart="48dp"
+        android:layout_marginEnd="48dp"
+        android:layout_marginTop="14dp"
+        android:id="@+id/searchview"
+        android:background="#B5FFFFFF"
+        android:hint="Enter to Search"
+        android:imeOptions="actionSearch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        />
+    -->
+    <ImageButton
+        android:id="@+id/button_screenshot"
+        android:layout_width="38dp"
+        android:layout_height="38dp"
+        android:onClick="takeScreenshot"
+        android:layout_marginBottom="16dp"
+        android:layout_marginStart="16dp"
+        android:src="@drawable/ic_screenshot_black_24dp"
+        android:background="@drawable/mybutton"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="16dp" />
+
+    <ImageButton
+        android:id="@+id/button_share_screenshot"
+        android:layout_width="38dp"
+        android:layout_height="38dp"
+        android:layout_marginBottom="16dp"
+        android:onClick="shareScreenshot"
+        android:src="@drawable/ic_share_black_24dp"
+        android:background="@drawable/mybutton"
+        android:layout_alignParentBottom="true"
+        android:layout_toEndOf="@id/button_screenshot"
+        android:layout_toRightOf="@id/button_screenshot" />
+
+
+</RelativeLayout>

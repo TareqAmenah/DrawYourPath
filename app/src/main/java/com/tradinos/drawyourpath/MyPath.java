@@ -76,4 +76,14 @@ public class MyPath {
     public String getDuration() {
         return duration;
     }
+
+    @NonNull
+    @Override
+    public String toString() {
+        String s = "From: " + from + ", To: " + to
+                + "\nDistance: " + distance
+                + "\nDuration: " + duration;
+
+        return s;
+    }
 }
