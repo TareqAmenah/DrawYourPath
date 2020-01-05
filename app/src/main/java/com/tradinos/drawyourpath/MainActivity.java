@@ -13,7 +13,6 @@ import android.telephony.SmsManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -41,8 +40,6 @@ public class MainActivity extends AppCompatActivity implements PathsAdapter.send
     private AppBarConfiguration mAppBarConfiguration;
     private BottomSheetBehavior sheetBehavior;
     public ConstraintLayout bottom_sheet;
-    private Button sendButton;
-    private Button shareButton;
     private ImageView bottomSheetArrow;
     private ImageButton showNavigationDrawerButton;
     private DrawerLayout drawer;
@@ -78,8 +75,6 @@ public class MainActivity extends AppCompatActivity implements PathsAdapter.send
 
         bottom_sheet = findViewById(R.id.bottom_sheet);
         sheetBehavior = BottomSheetBehavior.from(bottom_sheet);
-        sendButton = bottom_sheet.findViewById(R.id.send_button);
-        shareButton = bottom_sheet.findViewById(R.id.share_button);
         bottomSheetArrow = bottom_sheet.findViewById(R.id.bottom_sheet_arrow);
         showNavigationDrawerButton = findViewById(R.id.showNavigationDrawer_button);
 
@@ -149,22 +144,6 @@ public class MainActivity extends AppCompatActivity implements PathsAdapter.send
         });
 
 
-        sendButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Toast.makeText(MainActivity.this,"Send!",Toast.LENGTH_SHORT).show();
-
-            }
-        });
-
-        shareButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Toast.makeText(MainActivity.this,"Share!",Toast.LENGTH_SHORT).show();
-            }
-        });
-
-
         // callback for do something
         sheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
             @Override
@@ -173,12 +152,10 @@ public class MainActivity extends AppCompatActivity implements PathsAdapter.send
                     case BottomSheetBehavior.STATE_HIDDEN:
                         break;
                     case BottomSheetBehavior.STATE_EXPANDED: {
-                        Toast.makeText(MainActivity.this,"Expand Sheet",Toast.LENGTH_SHORT).show();
                         bottomSheetArrow.setBackgroundResource(R.drawable.ic_keyboard_arrow_down_black_24dp);
                     }
                     break;
                     case BottomSheetBehavior.STATE_COLLAPSED: {
-                        Toast.makeText(MainActivity.this,"Close Sheet",Toast.LENGTH_SHORT).show();
                         bottomSheetArrow.setBackgroundResource(R.drawable.ic_keyboard_arrow_up_black_24dp);
                     }
                     break;

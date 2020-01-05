@@ -3,7 +3,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/nav_home">
+    app:startDestination="@+id/nav_map">
+
+
+    <fragment
+        android:id="@+id/nav_map"
+        android:name="com.tradinos.drawyourpath.ui.map.MapFragment"
+        android:label="Map"
+        tools:layout="@layout/fragment_map" />
 
     <fragment
         android:id="@+id/nav_home"
@@ -17,11 +24,6 @@
         android:label="@string/menu_gallery"
         tools:layout="@layout/fragment_paths" />
 
-    <activity
-        android:id="@+id/mapFragment"
-        android:name="com.tradinos.drawyourpath.ui.map.MapFragment"
-        android:label="activity_map_fragment"
-        tools:layout="@layout/map_fragment" />
 
 
 </navigation>

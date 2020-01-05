@@ -5,14 +5,14 @@
     android:id="@+id/bottom_sheet"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="#00EBEBEB"
+    android:background="#00FFFFFF"
     android:orientation="vertical"
     app:behavior_hideable="false"
-    app:behavior_peekHeight="120dp"
+    app:behavior_peekHeight="90dp"
     app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab"
+        android:id="@+id/draw_rout_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/fab_margin"
@@ -27,7 +27,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="48dp"
         android:orientation="vertical"
-        android:background="#E7E7E7"
+        android:background="#FAFAFA"
         android:paddingStart="16dp"
         android:paddingEnd="16dp"
         app:layout_constraintTop_toTopOf="parent"
@@ -40,32 +40,63 @@
             android:layout_gravity="center"
             android:background="@drawable/ic_keyboard_arrow_up_black_24dp" />
 
-        <Button
-            android:id="@+id/send_button"
+        <LinearLayout
+            android:id="@+id/linearLayout3"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="SEND" />
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Distance:"
+                android:textSize="18sp" />
+
+
+            <TextView
+                android:id="@+id/distance_textview"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="-------"
+                android:textSize="18sp" />
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/linearLayout2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Duration:"
+                android:textSize="18sp" />
+
+
+            <TextView
+                android:id="@+id/duration_textview"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="-----"
+                android:textSize="18sp" />
+        </LinearLayout>
 
         <Button
-            android:id="@+id/share_button"
+            android:id="@+id/save_path_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="SHARE" />
+            android:text="Save Path"
+            android:layout_marginBottom="16dp"/>
 
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="SHARE" />
-
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="SHARE" />
-
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="SHARE" />
 
 
     </LinearLayout>
