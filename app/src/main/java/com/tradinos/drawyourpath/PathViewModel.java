@@ -29,4 +29,8 @@ public class PathViewModel extends AndroidViewModel {
         mRepository.insertPath(myPath);
     }
 
+    public void deletePath(MyPath myPath){
+        mRepository.deletePath(myPath);
+    }
+
 }

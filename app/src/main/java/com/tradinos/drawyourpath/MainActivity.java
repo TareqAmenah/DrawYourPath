@@ -30,12 +30,13 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
-public class MainActivity extends AppCompatActivity implements PathsAdapter.sendSmsCallback {
+public class MainActivity extends AppCompatActivity implements PathsAdapter.sendSmsCallback, PathsAdapter.deletePathFromDatabaseCallback {
 
     private AppBarConfiguration mAppBarConfiguration;
     private BottomSheetBehavior sheetBehavior;
@@ -290,5 +291,12 @@ public class MainActivity extends AppCompatActivity implements PathsAdapter.send
                         Toast.LENGTH_LONG).show();
                 ex.printStackTrace();
             }
+    }
+
+    @Override
+    public void deletePathAction(MyPath myPath) {
+        PathViewModel mPathViewModel = new ViewModelProvider(this).get(PathViewModel.class);
+        mPathViewModel.deletePath(myPath);
+
     }
 }

@@ -1,11 +1,14 @@
 package com.tradinos.drawyourpath;
 
 import android.content.Context;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.List;
 
@@ -18,11 +21,13 @@ public class PathsAdapter extends RecyclerView.Adapter<PathsAdapter.MyViewHolder
     private List<MyPath> mPaths; // Cached copy of words
     private Context mContext;
     private sendSmsCallback mSendSmsCallback;
+    private deletePathFromDatabaseCallback mDeletePathFromDatabaseCallback;
 
     public PathsAdapter(Context context){
         mInflater = LayoutInflater.from(context);
         mContext = context;
         mSendSmsCallback = (sendSmsCallback)context;
+        mDeletePathFromDatabaseCallback = (deletePathFromDatabaseCallback)context;
     }
 
     public void setPaths(List<MyPath> paths){
@@ -67,7 +72,7 @@ public class PathsAdapter extends RecyclerView.Adapter<PathsAdapter.MyViewHolder
         return 0;
     }
 
-    public class MyViewHolder extends RecyclerView.ViewHolder {
+    public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener {
         public TextView mFrom, mTo, mDistance, mDuration;
         public Button mSendSMS;
 
@@ -80,12 +85,49 @@ public class PathsAdapter extends RecyclerView.Adapter<PathsAdapter.MyViewHolder
             mDistance = view.findViewById(R.id.distance_textview);
             mDuration = view.findViewById(R.id.duration_textview);
             mSendSMS = view.findViewById(R.id.send_sms_button);
+            view.setOnCreateContextMenuListener(this);
 
         }
+
+        @Override
+        public void onCreateContextMenu(ContextMenu contextMenu, View view, ContextMenu.ContextMenuInfo contextMenuInfo) {
+            contextMenu.setHeaderTitle("Select The Action");
+            contextMenu.add(this.getAdapterPosition(), 1, 1, "Delete").
+                    setOnMenuItemClickListener(onEditMenu);
+            contextMenu.add(this.getAdapterPosition(), 2, 2, "Share").
+                    setOnMenuItemClickListener(onEditMenu);
+
+        }
+
+
+        private final MenuItem.OnMenuItemClickListener onEditMenu = new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+
+                switch (item.getItemId()) {
+                    case 1:
+                        mDeletePathFromDatabaseCallback.deletePathAction(mPaths.get(item.getGroupId()));
+                        Toast.makeText(mContext, mPaths.get(item.getGroupId()).getDistance(), Toast.LENGTH_SHORT).show();
+                        break;
+
+                    case 2:
+                        Toast.makeText(mContext, "Share item", Toast.LENGTH_SHORT).show();
+                        break;
+                }
+                return true;
+            }
+        };
+
+
+
     }
 
     public interface sendSmsCallback{
         public void sendSmsAction(MyPath myPath);
+    }
+
+    public interface deletePathFromDatabaseCallback{
+        public void deletePathAction(MyPath myPath);
     }
 
 }

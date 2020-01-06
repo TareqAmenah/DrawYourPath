@@ -28,4 +28,10 @@ public class PathRepository {
         });
     }
 
+    public void deletePath(MyPath myPath){
+        PathRoomDatabase.databaseWriteExecutor.execute(() -> {
+            mPathDao.delete(myPath);
+        });
+    }
+
 }
