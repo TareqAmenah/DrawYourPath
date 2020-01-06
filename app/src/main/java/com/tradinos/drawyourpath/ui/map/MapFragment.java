@@ -7,8 +7,12 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Point;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -41,6 +45,7 @@ import com.tradinos.drawyourpath.MyPath;
 import com.tradinos.drawyourpath.PathViewModel;
 import com.tradinos.drawyourpath.R;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -51,6 +56,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -75,6 +81,7 @@ public class MapFragment extends Fragment {
     private String recentScreenshotName = null;
     private boolean isShareScreenshotAvailable = false;
     private boolean isDrawingNow = false;
+    private boolean isCapturedImageReady = false;
     CustomListViewDialog customDialog;
 
     private View bottom_sheet;
@@ -323,55 +330,7 @@ public class MapFragment extends Fragment {
 
     }
 
-    public void captureScreen() {
-        GoogleMap.SnapshotReadyCallback callback = new GoogleMap.SnapshotReadyCallback() {
 
-            @Override
-            public void onSnapshotReady(Bitmap snapshot)
-            {
-                Date now = new Date();
-                android.text.format.DateFormat.format("yyyy-MM-dd_hh:mm:ss", now);
-
-                // image naming and path  to include sd card  appending name you choose for file
-                String imageName = now + ".jpg";
-                String directory = Environment.getExternalStorageDirectory().toString() +  "/" + MAIN_FOLDER_NAME;
-                File directoryFile = new File(directory);
-                if(!directoryFile.exists())
-                    directoryFile.mkdirs();
-
-                String mPath =   directory + "/" +imageName;
-
-                OutputStream fout = null;
-
-                try {
-                    File imageFile = new File(mPath);
-
-                    FileOutputStream outputStream = new FileOutputStream(imageFile);
-                    int quality = 100;
-                    snapshot.compress(Bitmap.CompressFormat.JPEG, quality, outputStream);
-                    outputStream.flush();
-                    outputStream.close();
-
-                    recentScreenshotName = imageName;
-
-                    Log.v("************",mPath);
-                }
-                catch (FileNotFoundException e) {
-                    // TODO Auto-generated catch block
-                    Log.d("ImageCapture", "FileNotFoundException");
-                    Log.d("ImageCapture", e.getMessage());
-                }
-                catch (IOException e) {
-                    // TODO Auto-generated catch block
-                    Log.d("ImageCapture", "IOException");
-                    Log.d("ImageCapture", e.getMessage());
-                }
-
-            }
-        };
-
-        googleMap.snapshot(callback);
-    }
 
     public boolean checkLocationPermission() {
         if (ContextCompat.checkSelfPermission(getActivity(),
@@ -414,6 +373,7 @@ public class MapFragment extends Fragment {
     }
 
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public void DrawOnMap() {
 
 
@@ -434,7 +394,6 @@ public class MapFragment extends Fragment {
         if(linePointsList.size() == 1){
             googleMap.addMarker(new MarkerOptions().position(linePointsList.get(0)));
         }else{
-
 
 
             PolylineOptions rectOptions = new PolylineOptions();
@@ -470,10 +429,47 @@ public class MapFragment extends Fragment {
 
 
                 //TODO: select start and end of path
-                currentPath = new MyPath("start",
-                        "End",
-                        df.format(distance) + " km",
-                        "----");
+
+//                Drawable d = getActivity().getDrawable(R.drawable.sampl_map); // the drawable (Captain Obvious, to the rescue!!!)
+//                Bitmap bitmap = ((BitmapDrawable)d).getBitmap();
+//                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+//                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+//                byte[] bitmapdata = stream.toByteArray();
+//
+//                String encodedImage = Base64.encodeToString(bitmapdata, Base64.DEFAULT);
+
+                final String[] encodedImage = new String[1];
+
+                Double finalDistance = distance;
+                GoogleMap.SnapshotReadyCallback callback = new GoogleMap.SnapshotReadyCallback() {
+
+                    @Override
+                    public void onSnapshotReady(Bitmap snapshot)
+                    {
+
+                        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                        snapshot.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+                        byte[] bitmapdata = stream.toByteArray();
+
+                        encodedImage[0] = Base64.encodeToString(bitmapdata, Base64.DEFAULT);
+
+                        currentPath = new MyPath("start",
+                                "End",
+                                Double.valueOf(df.format(finalDistance)),
+                                "----",
+                                encodedImage[0]);
+
+
+                    }
+                };
+
+
+
+                googleMap.snapshot(callback);
+
+
+
+
 
                 BottomSheetBehavior bottomSheetBehavior = BottomSheetBehavior.from(bottom_sheet);
                 bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
@@ -501,6 +497,36 @@ public class MapFragment extends Fragment {
     }
 
 
+    public String captureScreen() {
+
+        final String[] encodedImage = new String[1];
+        isCapturedImageReady = false;
+
+        GoogleMap.SnapshotReadyCallback callback = new GoogleMap.SnapshotReadyCallback() {
+
+            @Override
+            public void onSnapshotReady(Bitmap snapshot)
+            {
+
+                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                snapshot.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+                byte[] bitmapdata = stream.toByteArray();
+
+                encodedImage[0] = Base64.encodeToString(bitmapdata, Base64.DEFAULT);
+
+                isCapturedImageReady = true;
+
+                Log.d("****** iamge: ", encodedImage[0]);
+
+
+            }
+        };
+
+
+
+        googleMap.snapshot(callback);
+        return encodedImage[0];
+    }
 
 
 

@@ -6,10 +6,14 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.ContactsContract;
 import android.telephony.SmsManager;
+import android.util.Base64;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
@@ -22,12 +26,17 @@ import com.google.android.material.navigation.NavigationView;
 import com.tradinos.drawyourpath.contactManager.Contact;
 import com.tradinos.drawyourpath.contactManager.ContactUtil;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.lifecycle.ViewModelProvider;
@@ -36,7 +45,10 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
-public class MainActivity extends AppCompatActivity implements PathsAdapter.sendSmsCallback, PathsAdapter.deletePathFromDatabaseCallback {
+public class MainActivity extends AppCompatActivity
+        implements PathsAdapter.sendSmsCallback,
+        PathsAdapter.deletePathFromDatabaseCallback,
+        PathsAdapter.sharePathWithImageCallback{
 
     private AppBarConfiguration mAppBarConfiguration;
     private BottomSheetBehavior sheetBehavior;
@@ -48,7 +60,9 @@ public class MainActivity extends AppCompatActivity implements PathsAdapter.send
     private final int PICK_CONTACT = 99;
     private final int MY_PERMISSIONS_REQUEST_READ_CONTACTS = 98;
     private final int MY_PERMISSIONS_REQUEST_SEND_SMS = 97;
+    private final int MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 96;
     private boolean HAS_PERMISSIONS_READ_CONTACTS = false;
+    private boolean HAS_PERMISSIONS_WRITE_EXTERNAL_STORAGE = false;
     private boolean HAS_PERMISSIONS_SEND_SMS = false;
 
     //TODO: search for another way ...
@@ -127,6 +141,15 @@ public class MainActivity extends AppCompatActivity implements PathsAdapter.send
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     HAS_PERMISSIONS_SEND_SMS = true;
+                }
+                return;
+            }
+
+            case MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    HAS_PERMISSIONS_WRITE_EXTERNAL_STORAGE = true;
                 }
                 return;
             }
@@ -230,6 +253,19 @@ public class MainActivity extends AppCompatActivity implements PathsAdapter.send
             HAS_PERMISSIONS_SEND_SMS = true;
         }
 
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE);
+        } else {
+            HAS_PERMISSIONS_WRITE_EXTERNAL_STORAGE = true;
+        }
+
+
+
         if(HAS_PERMISSIONS_SEND_SMS && HAS_PERMISSIONS_READ_CONTACTS)
             return true;
 
@@ -297,6 +333,42 @@ public class MainActivity extends AppCompatActivity implements PathsAdapter.send
     public void deletePathAction(MyPath myPath) {
         PathViewModel mPathViewModel = new ViewModelProvider(this).get(PathViewModel.class);
         mPathViewModel.deletePath(myPath);
+
+    }
+
+    @Override
+    public void sharePathWithImageAction(MyPath myPath) {
+
+        getPermissions();
+        if(!HAS_PERMISSIONS_WRITE_EXTERNAL_STORAGE)
+            return;
+
+        if(myPath.getImageBase64() != null){
+            byte[] decodedString = Base64.decode(myPath.getImageBase64(), Base64.DEFAULT);
+            Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+
+            Intent shareIntent;
+            String path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)+"/Share.png";
+            OutputStream out = null;
+            File file=new File(path);
+            try {
+                out = new FileOutputStream(file);
+                decodedByte.compress(Bitmap.CompressFormat.PNG, 100, out);
+                out.flush();
+                out.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            Uri photoURI = FileProvider.getUriForFile(this, this.getApplicationContext().getPackageName() + ".provider", file);
+
+            shareIntent = new Intent(android.content.Intent.ACTION_SEND);
+            shareIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            shareIntent.putExtra(Intent.EXTRA_STREAM, photoURI);
+            shareIntent.putExtra(Intent.EXTRA_TEXT,myPath.toString());
+            shareIntent.setType("image/png");
+            startActivity(Intent.createChooser(shareIntent,"Share with"));
+        }
+
 
     }
 }

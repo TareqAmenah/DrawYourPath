@@ -1,12 +1,16 @@
 package com.tradinos.drawyourpath;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.util.Base64;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,12 +26,14 @@ public class PathsAdapter extends RecyclerView.Adapter<PathsAdapter.MyViewHolder
     private Context mContext;
     private sendSmsCallback mSendSmsCallback;
     private deletePathFromDatabaseCallback mDeletePathFromDatabaseCallback;
+    private sharePathWithImageCallback mSharePathWithImageCallback;
 
     public PathsAdapter(Context context){
         mInflater = LayoutInflater.from(context);
         mContext = context;
         mSendSmsCallback = (sendSmsCallback)context;
         mDeletePathFromDatabaseCallback = (deletePathFromDatabaseCallback)context;
+        mSharePathWithImageCallback = (sharePathWithImageCallback) context;
     }
 
     public void setPaths(List<MyPath> paths){
@@ -46,12 +52,19 @@ public class PathsAdapter extends RecyclerView.Adapter<PathsAdapter.MyViewHolder
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
 
         if(mPaths != null){
+
+            if(mPaths.get(position).getImageBase64() != null){
+                byte[] decodedString = Base64.decode(mPaths.get(position).getImageBase64(), Base64.DEFAULT);
+                Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+                holder.mMapImage.setImageBitmap(decodedByte);
+
+            }
+
             MyPath myPath = mPaths.get(position);
             holder.mFrom.setText(myPath.getFrom());
             holder.mTo.setText(myPath.getTo());
-            holder.mDistance.setText(myPath.getDistance());
+            holder.mDistance.setText(myPath.getDistanceAsString());
             holder.mDuration.setText(myPath.getDuration());
-
 
 
             holder.mSendSMS.setOnClickListener(new View.OnClickListener() {
@@ -75,6 +88,7 @@ public class PathsAdapter extends RecyclerView.Adapter<PathsAdapter.MyViewHolder
     public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener {
         public TextView mFrom, mTo, mDistance, mDuration;
         public Button mSendSMS;
+        public ImageView mMapImage;
 
         //Todo add image view to the adapter
 
@@ -85,6 +99,8 @@ public class PathsAdapter extends RecyclerView.Adapter<PathsAdapter.MyViewHolder
             mDistance = view.findViewById(R.id.distance_textview);
             mDuration = view.findViewById(R.id.duration_textview);
             mSendSMS = view.findViewById(R.id.send_sms_button);
+            mMapImage = view.findViewById(R.id.map_image);
+            mMapImage.setScaleType(ImageView.ScaleType.CENTER_CROP);
             view.setOnCreateContextMenuListener(this);
 
         }
@@ -107,10 +123,11 @@ public class PathsAdapter extends RecyclerView.Adapter<PathsAdapter.MyViewHolder
                 switch (item.getItemId()) {
                     case 1:
                         mDeletePathFromDatabaseCallback.deletePathAction(mPaths.get(item.getGroupId()));
-                        Toast.makeText(mContext, mPaths.get(item.getGroupId()).getDistance(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(mContext, mPaths.get(item.getGroupId()).getDistanceAsString(), Toast.LENGTH_SHORT).show();
                         break;
 
                     case 2:
+                        mSharePathWithImageCallback.sharePathWithImageAction(mPaths.get(item.getGroupId()));
                         Toast.makeText(mContext, "Share item", Toast.LENGTH_SHORT).show();
                         break;
                 }
@@ -128,6 +145,10 @@ public class PathsAdapter extends RecyclerView.Adapter<PathsAdapter.MyViewHolder
 
     public interface deletePathFromDatabaseCallback{
         public void deletePathAction(MyPath myPath);
+    }
+
+    public interface sharePathWithImageCallback{
+        public void sharePathWithImageAction(MyPath myPath);
     }
 
 }

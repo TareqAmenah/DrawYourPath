@@ -20,8 +20,8 @@
             android:id="@+id/map_image"
             android:layout_width="match_parent"
             android:layout_height="170dp"
-            android:scaleType="centerCrop"
-            android:src="@drawable/sampl_map"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_image_black_24dp"
             card_view:layout_constraintEnd_toEndOf="parent"
             card_view:layout_constraintStart_toStartOf="parent"
             card_view:layout_constraintTop_toTopOf="parent" />
