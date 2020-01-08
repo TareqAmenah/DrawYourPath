@@ -26,8 +26,8 @@ import com.google.android.material.navigation.NavigationView;
 import com.tradinos.drawyourpath.Models.MyPath;
 import com.tradinos.drawyourpath.Utils.contactManager.Contact;
 import com.tradinos.drawyourpath.Utils.contactManager.ContactUtil;
-import com.tradinos.drawyourpath.sources.PathViewModel;
-import com.tradinos.drawyourpath.ui.paths.PathsAdapter;
+import com.tradinos.drawyourpath.Sources.PathViewModel;
+import com.tradinos.drawyourpath.Ui.paths.PathsAdapter;
 
 import java.io.File;
 import java.io.FileOutputStream;

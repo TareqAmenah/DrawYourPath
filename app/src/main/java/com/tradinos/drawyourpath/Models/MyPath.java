@@ -13,16 +13,16 @@ public class MyPath {
 
     @PrimaryKey(autoGenerate = true)
     private int id;
-    @NonNull
     @ColumnInfo(name = "from")
     private String from;
-    @NonNull
     @ColumnInfo(name = "to")
     private String to;
+    @ColumnInfo(name = "title")
+    private String title;
     @ColumnInfo(name = "distance")
     private double distance;
     @ColumnInfo(name = "duration")
-    private String duration;
+    private int duration;
     @ColumnInfo(name = "image")
     private String imageBase64;
 
@@ -30,12 +30,21 @@ public class MyPath {
     }
 
     @Ignore
-    public MyPath(String from, String to, double distance, String duration, String imageBase64) {
+    public MyPath(String from, String to, String title, double distance, int duration, String imageBase64) {
         this.from = from;
         this.to = to;
+        this.title = title;
         this.distance = distance;
         this.duration = duration;
         this.imageBase64 = imageBase64;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public int getId() {
@@ -78,11 +87,11 @@ public class MyPath {
         this.distance = distance;
     }
 
-    public String getDuration() {
+    public int getDuration() {
         return duration;
     }
 
-    public void setDuration(String duration) {
+    public void setDuration(int duration) {
         this.duration = duration;
     }
 
@@ -105,6 +114,6 @@ public class MyPath {
     @Ignore
     public String getDurationAsString(){
         DecimalFormat df = new DecimalFormat("0.00");
-        return df.format(duration) + " km";
+        return duration + " m";
     }
 }

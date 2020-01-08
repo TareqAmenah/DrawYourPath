@@ -8,19 +8,19 @@
 
     <fragment
         android:id="@+id/nav_map"
-        android:name="com.tradinos.drawyourpath.ui.map.MapFragment"
+        android:name="com.tradinos.drawyourpath.Ui.map.MapFragment"
         android:label="Map"
         tools:layout="@layout/fragment_map" />
 
     <fragment
         android:id="@+id/nav_home"
-        android:name="com.tradinos.drawyourpath.ui.home.HomeFragment"
+        android:name="com.tradinos.drawyourpath.Ui.home.HomeFragment"
         android:label="@string/menu_home"
         tools:layout="@layout/fragment_home" />
 
     <fragment
         android:id="@+id/nav_paths"
-        android:name="com.tradinos.drawyourpath.ui.paths.PathsFragment"
+        android:name="com.tradinos.drawyourpath.Ui.paths.PathsFragment"
         android:label="@string/menu_gallery"
         tools:layout="@layout/fragment_paths" />
 

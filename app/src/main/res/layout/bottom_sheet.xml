@@ -40,6 +40,11 @@
             android:layout_gravity="center"
             android:background="@drawable/ic_keyboard_arrow_up_black_24dp" />
 
+        <EditText
+            android:id="@+id/title_edit_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Add Title"/>
         <LinearLayout
             android:id="@+id/linearLayout3"
             android:layout_width="match_parent"

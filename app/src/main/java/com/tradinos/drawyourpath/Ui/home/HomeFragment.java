@@ -1,4 +1,4 @@
-package com.tradinos.drawyourpath.ui.home;
+package com.tradinos.drawyourpath.Ui.home;
 
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
@@ -14,7 +14,7 @@ import android.widget.EditText;
 
 import com.tradinos.drawyourpath.MainActivity;
 import com.tradinos.drawyourpath.Models.MyPath;
-import com.tradinos.drawyourpath.sources.PathViewModel;
+import com.tradinos.drawyourpath.Sources.PathViewModel;
 import com.tradinos.drawyourpath.R;
 
 import java.io.ByteArrayOutputStream;
@@ -69,7 +69,7 @@ public class HomeFragment extends Fragment {
 
                 String encodedImage = Base64.encodeToString(bitmapdata, Base64.DEFAULT);
 
-                mPathViewModel.insertPath(new MyPath(sFrom, sTo, Double.valueOf(sDistance), sDuration, encodedImage));
+                mPathViewModel.insertPath(new MyPath(sFrom, sTo, "Title", Double.valueOf(sDistance), Integer.valueOf(sDuration), encodedImage));
 
             }
         });

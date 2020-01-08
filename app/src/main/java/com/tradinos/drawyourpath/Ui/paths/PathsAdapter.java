@@ -1,6 +1,7 @@
-package com.tradinos.drawyourpath.ui.paths;
+package com.tradinos.drawyourpath.Ui.paths;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -12,7 +13,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,6 +28,7 @@ import java.io.OutputStream;
 import java.util.List;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -102,15 +104,49 @@ public class PathsAdapter extends RecyclerView.Adapter<PathsAdapter.MyViewHolder
             }
 
             MyPath myPath = mPaths.get(position);
-            holder.mFrom.setText(myPath.getFrom());
-            holder.mTo.setText(myPath.getTo());
+            if(myPath.getTitle()!=null){
+                holder.mFrom.setText(myPath.getTitle());
+                holder.mTo.setVisibility(View.GONE);
+
+            }
+//            holder.mTo.setText(myPath.getTo());
             holder.mDistance.setText(myPath.getDistanceAsString());
-            holder.mDuration.setText(myPath.getDuration());
+            holder.mDuration.setText(myPath.getDurationAsString());
 
             holder.mSendSMS.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     mSendSmsCallback.sendSmsAction(mPaths.get(position));
+                }
+            });
+
+            holder.mSharePath.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    mSharePathWithImageCallback.sharePathWithImageAction(mPaths.get(position));
+                }
+            });
+
+            holder.mDeletePath.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                    new AlertDialog.Builder(mContext)
+                            .setTitle("Delete path!")
+                            .setMessage("Are you sure you want to delete this path?")
+                            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    mDeletePathFromDatabaseCallback.deletePathAction(mPaths.get(position));
+                                    Toast.makeText(mContext, "Message Sent",
+                                            Toast.LENGTH_LONG).show();
+                                }
+                            })
+
+                            // A null listener allows the button to dismiss the dialog and take no further action.
+                            .setNegativeButton(android.R.string.no, null)
+                            .setIcon(android.R.drawable.ic_dialog_alert)
+                            .show();
+
                 }
             });
         }
@@ -130,7 +166,7 @@ public class PathsAdapter extends RecyclerView.Adapter<PathsAdapter.MyViewHolder
             implements View.OnCreateContextMenuListener {
 
         TextView mFrom, mTo, mDistance, mDuration;
-        Button mSendSMS;
+        ImageButton mSendSMS, mSharePath, mDeletePath;
         ImageView mMapImage;
 
         MyViewHolder(View view) {
@@ -139,7 +175,9 @@ public class PathsAdapter extends RecyclerView.Adapter<PathsAdapter.MyViewHolder
             mTo = view.findViewById(R.id.to_textview);
             mDistance = view.findViewById(R.id.distance_textview);
             mDuration = view.findViewById(R.id.duration_textview);
-            mSendSMS = view.findViewById(R.id.send_sms_button);
+            mSendSMS = view.findViewById(R.id.send_path_sms_button);
+            mSharePath = view.findViewById(R.id.share_path_button);
+            mDeletePath = view.findViewById(R.id.delete_path_button);
             mMapImage = view.findViewById(R.id.map_image);
             mMapImage.setScaleType(ImageView.ScaleType.CENTER_CROP);
             view.setOnCreateContextMenuListener(this);

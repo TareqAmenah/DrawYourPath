@@ -1,4 +1,4 @@
-package com.tradinos.drawyourpath.sources;
+package com.tradinos.drawyourpath.Sources;
 
 import com.tradinos.drawyourpath.Models.MyPath;
 

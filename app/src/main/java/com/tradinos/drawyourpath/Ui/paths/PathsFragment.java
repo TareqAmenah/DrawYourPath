@@ -1,4 +1,4 @@
-package com.tradinos.drawyourpath.ui.paths;
+package com.tradinos.drawyourpath.Ui.paths;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import com.tradinos.drawyourpath.MainActivity;
 import com.tradinos.drawyourpath.Models.MyPath;
 import com.tradinos.drawyourpath.R;
-import com.tradinos.drawyourpath.sources.PathViewModel;
+import com.tradinos.drawyourpath.Sources.PathViewModel;
 
 import java.util.List;
 

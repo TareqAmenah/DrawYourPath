@@ -1,4 +1,4 @@
-package com.tradinos.drawyourpath.ui.map;
+package com.tradinos.drawyourpath.Ui.map;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -13,6 +13,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -32,7 +33,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.tradinos.drawyourpath.Models.MyPath;
 import com.tradinos.drawyourpath.R;
 import com.tradinos.drawyourpath.Utils.HaversineDistanceUtil;
-import com.tradinos.drawyourpath.sources.PathViewModel;
+import com.tradinos.drawyourpath.Sources.PathViewModel;
 
 import java.io.ByteArrayOutputStream;
 import java.text.DecimalFormat;
@@ -65,6 +66,7 @@ public class MapFragment extends Fragment {
     private FloatingActionButton newRoutButton;
     private TextView tvDistance;
     private TextView tvDuration;
+    private EditText etPathTitle;
     private FrameLayout FrameMap;
 
     private Polyline currentPolyline;
@@ -106,12 +108,14 @@ public class MapFragment extends Fragment {
         newRoutButton = bottom_sheet.findViewById(R.id.draw_rout_button);
         tvDistance = bottom_sheet.findViewById(R.id.distance_textview);
         tvDuration = bottom_sheet.findViewById(R.id.duration_textview);
+        etPathTitle = bottom_sheet.findViewById(R.id.title_edit_text);
         FrameMap =  rootView.findViewById(R.id.fram_map);
         mMapView = rootView.findViewById(R.id.map);
     }
 
     @SuppressLint("ClickableViewAccessibility")
     private void setupActions() {
+
         newRoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -125,8 +129,6 @@ public class MapFragment extends Fragment {
                     newRoutButton.setImageResource(R.drawable.ic_open_with_black_24dp);
                 else  newRoutButton.setImageResource(R.drawable.ic_edit_mode_black_24dp);
 
-
-
             }
         });
 
@@ -138,6 +140,8 @@ public class MapFragment extends Fragment {
                     Toast.makeText(getActivity(),"No path found!", Toast.LENGTH_SHORT).show();
                     return;
                 }
+                String pathTitle = etPathTitle.getText().toString();
+                currentPath.setTitle(pathTitle);
 
                 PathViewModel mPathViewModel = new ViewModelProvider(requireActivity()).get(PathViewModel.class);
                 mPathViewModel.insertPath(currentPath);
@@ -289,14 +293,15 @@ public class MapFragment extends Fragment {
 
 
                 double distance = 0.0;
-                double duration = 0.0;
+                int duration = 0;
                 for (int i = 0; i < linePointsList.size()-1; i++) {
                     distance += HaversineDistanceUtil.betwenToePoint(linePointsList.get(i), linePointsList.get(i+1));
                 }
-                duration = distance/40*60;
+                duration = (int)(distance/40*60);
 
                 DecimalFormat df = new DecimalFormat("0.00");
                 tvDistance.setText(df.format(distance) + " km");
+                tvDuration.setText(duration + " m");
 
 
                 newRoutButton.setImageResource(R.drawable.ic_edit_mode_black_24dp);
@@ -310,7 +315,7 @@ public class MapFragment extends Fragment {
                 final String[] encodedImage = new String[1];
                 Double finalDistance = distance;
 
-
+                int finalDuration = duration;
                 googleMap.snapshot(new GoogleMap.SnapshotReadyCallback() {
 
                     @Override
@@ -325,8 +330,9 @@ public class MapFragment extends Fragment {
 
                         currentPath = new MyPath("start",
                                 "End",
+                                " --- ",
                                 Double.valueOf(df.format(finalDistance)),
-                                "----",
+                                finalDuration,
                                 encodedImage[0]);
                     }
                 });
