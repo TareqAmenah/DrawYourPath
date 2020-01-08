@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="0dp"
+    android:fitsSystemWindows="true"
+    android:gravity="center"
+    android:background="#303030"
+    android:padding="0dp"
+    tools:context="com.tradinos.drawyourpath.ImageViewActivity">
+
+    <FrameLayout
+        android:id="@+id/frameLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="0.5"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <!--<include layout="@layout/content_image_view" />-->
+        <com.tradinos.drawyourpath.Utils.TouchImageView
+            android:id="@+id/image_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerInside"/>
+
+        <ImageButton
+            android:id="@+id/close_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top|start"
+            android:background="@android:color/transparent"
+            android:padding="10dp"
+            android:layout_margin="10dp"
+            android:src="@drawable/close" />
+    </FrameLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -1,4 +1,4 @@
-package com.tradinos.drawyourpath;
+package com.tradinos.drawyourpath.Models;
 
 import java.text.DecimalFormat;
 
@@ -100,5 +100,11 @@ public class MyPath {
     public String getDistanceAsString(){
         DecimalFormat df = new DecimalFormat("0.00");
         return df.format(distance) + " km";
+    }
+
+    @Ignore
+    public String getDurationAsString(){
+        DecimalFormat df = new DecimalFormat("0.00");
+        return df.format(duration) + " km";
     }
 }

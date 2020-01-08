@@ -1,4 +1,4 @@
-package com.tradinos.drawyourpath.contactManager;
+package com.tradinos.drawyourpath.Utils.contactManager;
 
 import android.content.ContentResolver;
 import android.content.Context;

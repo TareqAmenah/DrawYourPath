@@ -1,4 +1,4 @@
-package com.tradinos.drawyourpath;
+package com.tradinos.drawyourpath.Utils;
 
 import androidx.core.content.FileProvider;
 

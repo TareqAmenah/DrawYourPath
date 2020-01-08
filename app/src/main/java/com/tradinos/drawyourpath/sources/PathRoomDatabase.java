@@ -1,6 +1,8 @@
-package com.tradinos.drawyourpath;
+package com.tradinos.drawyourpath.sources;
 
 import android.content.Context;
+
+import com.tradinos.drawyourpath.Models.MyPath;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;

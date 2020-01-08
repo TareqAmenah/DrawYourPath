@@ -1,17 +1,14 @@
 package com.tradinos.drawyourpath.ui.paths;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.tradinos.drawyourpath.MainActivity;
-import com.tradinos.drawyourpath.MyPath;
-import com.tradinos.drawyourpath.PathViewModel;
-import com.tradinos.drawyourpath.PathsAdapter;
+import com.tradinos.drawyourpath.Models.MyPath;
 import com.tradinos.drawyourpath.R;
+import com.tradinos.drawyourpath.sources.PathViewModel;
 
 import java.util.List;
 
@@ -25,7 +22,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class PathsFragment extends Fragment {
 
-
     private PathViewModel mPathViewModel;
     private PathsAdapter adapter;
 
@@ -37,11 +33,6 @@ public class PathsFragment extends Fragment {
         mPathViewModel = new ViewModelProvider(this).get(PathViewModel.class);
     }
 
-    @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-    }
-
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
@@ -51,14 +42,12 @@ public class PathsFragment extends Fragment {
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(),1));
 
-        Toast.makeText(getActivity(),"paths fragment creat view", Toast.LENGTH_LONG);
         return root;
     }
-
-
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
         if(mPathViewModel.getAllPaths()!=null)
         mPathViewModel.getAllPaths().observe(getViewLifecycleOwner(), new Observer<List<MyPath>>() {
             @Override
@@ -68,12 +57,10 @@ public class PathsFragment extends Fragment {
         });
     }
 
-
     @Override
     public void onResume() {
         super.onResume();
         ((MainActivity)getActivity()).bottom_sheet.setVisibility(View.INVISIBLE);
     }
-
 
 }

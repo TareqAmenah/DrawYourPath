@@ -13,8 +13,8 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.tradinos.drawyourpath.MainActivity;
-import com.tradinos.drawyourpath.MyPath;
-import com.tradinos.drawyourpath.PathViewModel;
+import com.tradinos.drawyourpath.Models.MyPath;
+import com.tradinos.drawyourpath.sources.PathViewModel;
 import com.tradinos.drawyourpath.R;
 
 import java.io.ByteArrayOutputStream;
@@ -60,7 +60,6 @@ public class HomeFragment extends Fragment {
 
                 if(sFrom.equals("") || sTo.equals("") || sDistance.equals("") || sDuration.equals(""))
                     return;
-
 
                 Drawable d = getActivity().getDrawable(R.drawable.sampl_map); // the drawable (Captain Obvious, to the rescue!!!)
                 Bitmap bitmap = ((BitmapDrawable)d).getBitmap();

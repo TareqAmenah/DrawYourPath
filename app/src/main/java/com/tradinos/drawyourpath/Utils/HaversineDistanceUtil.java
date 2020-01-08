@@ -1,9 +1,8 @@
-package com.tradinos.drawyourpath;
+package com.tradinos.drawyourpath.Utils;
 
 import com.google.android.gms.maps.model.LatLng;
 
 public class HaversineDistanceUtil {
-
 
     final static int R = 6371; // Radious of the earth
 

@@ -1,6 +1,8 @@
-package com.tradinos.drawyourpath;
+package com.tradinos.drawyourpath.sources;
 
 import android.app.Application;
+
+import com.tradinos.drawyourpath.Models.MyPath;
 
 import java.util.List;
 

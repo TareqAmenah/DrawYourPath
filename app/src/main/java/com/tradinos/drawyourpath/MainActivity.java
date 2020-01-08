@@ -23,8 +23,11 @@ import android.widget.Toast;
 
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.navigation.NavigationView;
-import com.tradinos.drawyourpath.contactManager.Contact;
-import com.tradinos.drawyourpath.contactManager.ContactUtil;
+import com.tradinos.drawyourpath.Models.MyPath;
+import com.tradinos.drawyourpath.Utils.contactManager.Contact;
+import com.tradinos.drawyourpath.Utils.contactManager.ContactUtil;
+import com.tradinos.drawyourpath.sources.PathViewModel;
+import com.tradinos.drawyourpath.ui.paths.PathsAdapter;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -99,7 +102,6 @@ public class MainActivity extends AppCompatActivity
 
     }
 
-
     @Override
     public void onActivityResult(int reqCode, int resultCode, Intent data) {
         super.onActivityResult(reqCode, resultCode, data);
@@ -116,10 +118,9 @@ public class MainActivity extends AppCompatActivity
                         Toast.makeText(this,contact.getGivenName(),Toast.LENGTH_SHORT).show();
                         if(pathToSendInSms!=null)
                             sendSMS(contact.getContactNumber(), pathToSendInSms.toString());
-
                     }
                 }
-                break;
+            break;
         }
     }
 
@@ -155,49 +156,6 @@ public class MainActivity extends AppCompatActivity
             }
         }
     }
-
-
-    private void setupActions() {
-
-
-        showNavigationDrawerButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                drawer.openDrawer(GravityCompat.START);
-            }
-        });
-
-
-        // callback for do something
-        sheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
-            @Override
-            public void onStateChanged(@NonNull View view, int newState) {
-                switch (newState) {
-                    case BottomSheetBehavior.STATE_HIDDEN:
-                        break;
-                    case BottomSheetBehavior.STATE_EXPANDED: {
-                        bottomSheetArrow.setBackgroundResource(R.drawable.ic_keyboard_arrow_down_black_24dp);
-                    }
-                    break;
-                    case BottomSheetBehavior.STATE_COLLAPSED: {
-                        bottomSheetArrow.setBackgroundResource(R.drawable.ic_keyboard_arrow_up_black_24dp);
-                    }
-                    break;
-                    case BottomSheetBehavior.STATE_DRAGGING:
-                        break;
-                    case BottomSheetBehavior.STATE_SETTLING:
-                        break;
-                }
-            }
-
-            @Override
-            public void onSlide(@NonNull View view, float v) {
-
-            }
-        });
-    }
-
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -212,6 +170,12 @@ public class MainActivity extends AppCompatActivity
                 || super.onSupportNavigateUp();
     }
 
+    @Override
+    public void deletePathAction(MyPath myPath) {
+        PathViewModel mPathViewModel = new ViewModelProvider(this).get(PathViewModel.class);
+        mPathViewModel.deletePath(myPath);
+
+    }
 
     @Override
     public void sendSmsAction(MyPath myPath) {
@@ -225,114 +189,6 @@ public class MainActivity extends AppCompatActivity
 
 
         }
-
-    }
-
-    private boolean getPermissions(){
-
-        if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.READ_CONTACTS)
-                != PackageManager.PERMISSION_GRANTED) {
-
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.READ_CONTACTS},
-                    MY_PERMISSIONS_REQUEST_READ_CONTACTS);
-
-        } else{
-            HAS_PERMISSIONS_READ_CONTACTS = true;
-        }
-
-        if (ContextCompat.checkSelfPermission(this,
-            Manifest.permission.SEND_SMS)
-            != PackageManager.PERMISSION_GRANTED) {
-
-        ActivityCompat.requestPermissions(this,
-                new String[]{Manifest.permission.SEND_SMS},
-                MY_PERMISSIONS_REQUEST_SEND_SMS);
-        } else {
-            HAS_PERMISSIONS_SEND_SMS = true;
-        }
-
-        if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED) {
-
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                    MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE);
-        } else {
-            HAS_PERMISSIONS_WRITE_EXTERNAL_STORAGE = true;
-        }
-
-
-
-        if(HAS_PERMISSIONS_SEND_SMS && HAS_PERMISSIONS_READ_CONTACTS)
-            return true;
-
-        return false;
-    }
-
-    private void callContactProvider(){
-        // Here, thisActivity is the current activity
-        if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.READ_CONTACTS)
-                != PackageManager.PERMISSION_GRANTED) {
-
-                ActivityCompat.requestPermissions(this,
-                        new String[]{Manifest.permission.READ_CONTACTS},
-                        MY_PERMISSIONS_REQUEST_READ_CONTACTS);
-
-        } else if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.SEND_SMS)
-                != PackageManager.PERMISSION_GRANTED) {
-
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.SEND_SMS},
-                    MY_PERMISSIONS_REQUEST_SEND_SMS);
-
-        } else{
-                Intent intent = new Intent(Intent.ACTION_PICK, ContactsContract.CommonDataKinds.Phone.CONTENT_URI);
-                startActivityForResult(intent, PICK_CONTACT);
-            }
-
-    }
-
-    private void sendSMS(String phoneNo, String msg) {
-
-        Log.d("Send SMS: ","Phone number: " + phoneNo + "\nmessage: " + msg);
-
-        if(HAS_PERMISSIONS_SEND_SMS)
-            try {
-
-                new AlertDialog.Builder(this)
-                        .setTitle("Send SMS")
-                        .setMessage("Are you sure you want to send this path as sms?")
-                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                SmsManager smsManager = SmsManager.getDefault();
-                                smsManager.sendTextMessage(phoneNo, null, msg, null, null);
-                                Toast.makeText(getApplicationContext(), "Message Sent",
-                                        Toast.LENGTH_LONG).show();
-                            }
-                        })
-
-                        // A null listener allows the button to dismiss the dialog and take no further action.
-                        .setNegativeButton(android.R.string.no, null)
-                        .setIcon(android.R.drawable.ic_dialog_alert)
-                        .show();
-
-
-            } catch (Exception ex) {
-                Toast.makeText(getApplicationContext(),ex.getMessage().toString(),
-                        Toast.LENGTH_LONG).show();
-                ex.printStackTrace();
-            }
-    }
-
-    @Override
-    public void deletePathAction(MyPath myPath) {
-        PathViewModel mPathViewModel = new ViewModelProvider(this).get(PathViewModel.class);
-        mPathViewModel.deletePath(myPath);
 
     }
 
@@ -371,4 +227,144 @@ public class MainActivity extends AppCompatActivity
 
 
     }
+
+    private void setupActions() {
+
+        showNavigationDrawerButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                drawer.openDrawer(GravityCompat.START);
+            }
+        });
+
+        // callback for do something
+        sheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+            @Override
+            public void onStateChanged(@NonNull View view, int newState) {
+                switch (newState) {
+                    case BottomSheetBehavior.STATE_HIDDEN:
+                        break;
+                    case BottomSheetBehavior.STATE_EXPANDED: {
+                        bottomSheetArrow.setBackgroundResource(R.drawable.ic_keyboard_arrow_down_black_24dp);
+                    }
+                    break;
+                    case BottomSheetBehavior.STATE_COLLAPSED: {
+                        bottomSheetArrow.setBackgroundResource(R.drawable.ic_keyboard_arrow_up_black_24dp);
+                    }
+                    break;
+                    case BottomSheetBehavior.STATE_DRAGGING:
+                        break;
+                    case BottomSheetBehavior.STATE_SETTLING:
+                        break;
+                }
+            }
+
+            @Override
+            public void onSlide(@NonNull View view, float v) {
+
+            }
+        });
+    }
+
+    private boolean getPermissions(){
+
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.READ_CONTACTS)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.READ_CONTACTS},
+                    MY_PERMISSIONS_REQUEST_READ_CONTACTS);
+
+        } else{
+            HAS_PERMISSIONS_READ_CONTACTS = true;
+        }
+
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.SEND_SMS)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.SEND_SMS},
+                    MY_PERMISSIONS_REQUEST_SEND_SMS);
+        } else {
+            HAS_PERMISSIONS_SEND_SMS = true;
+        }
+
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE);
+        } else {
+            HAS_PERMISSIONS_WRITE_EXTERNAL_STORAGE = true;
+        }
+
+
+
+        if(HAS_PERMISSIONS_SEND_SMS && HAS_PERMISSIONS_READ_CONTACTS)
+            return true;
+
+        return false;
+    }
+
+    private void callContactProvider(){
+        // Here, thisActivity is the current activity
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.READ_CONTACTS)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.READ_CONTACTS},
+                    MY_PERMISSIONS_REQUEST_READ_CONTACTS);
+
+        } else if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.SEND_SMS)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.SEND_SMS},
+                    MY_PERMISSIONS_REQUEST_SEND_SMS);
+
+        } else{
+            Intent intent = new Intent(Intent.ACTION_PICK, ContactsContract.CommonDataKinds.Phone.CONTENT_URI);
+            startActivityForResult(intent, PICK_CONTACT);
+        }
+
+    }
+
+    private void sendSMS(String phoneNo, String msg) {
+
+        Log.d("Send SMS: ","Phone number: " + phoneNo + "\nmessage: " + msg);
+
+        if(HAS_PERMISSIONS_SEND_SMS)
+            try {
+
+                new AlertDialog.Builder(this)
+                        .setTitle("Send SMS")
+                        .setMessage("Are you sure you want to send this path as sms?")
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                SmsManager smsManager = SmsManager.getDefault();
+                                smsManager.sendTextMessage(phoneNo, null, msg, null, null);
+                                Toast.makeText(getApplicationContext(), "Message Sent",
+                                        Toast.LENGTH_LONG).show();
+                            }
+                        })
+
+                        // A null listener allows the button to dismiss the dialog and take no further action.
+                        .setNegativeButton(android.R.string.no, null)
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .show();
+
+
+            } catch (Exception ex) {
+                Toast.makeText(getApplicationContext(),ex.getMessage().toString(),
+                        Toast.LENGTH_LONG).show();
+                ex.printStackTrace();
+            }
+    }
+
 }

@@ -1,4 +1,4 @@
-package com.tradinos.drawyourpath.contactManager;
+package com.tradinos.drawyourpath.Utils.contactManager;
 
 public class Contact {
     String country;
