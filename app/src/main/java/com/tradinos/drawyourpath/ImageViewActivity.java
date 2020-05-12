@@ -1,6 +1,5 @@
 package com.tradinos.drawyourpath;
 
-import android.animation.Animator;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
@@ -16,14 +15,7 @@ public class ImageViewActivity extends FragmentActivity implements View.OnClickL
     ImageButton close_button;
     TouchImageView imageView;
     String imageUrl;
-    // Hold a reference to the current animator,
-    // so that it can be canceled mid-way.
-    private Animator mCurrentAnimator;
 
-    // The system "short" animation time duration, in milliseconds. This
-    // duration is ideal for subtle animations or animations that occur
-    // very frequently.
-    private int mShortAnimationDuration;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

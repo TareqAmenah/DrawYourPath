@@ -84,7 +84,7 @@ public class PathsAdapter extends RecyclerView.Adapter<PathsAdapter.MyViewHolder
                         byte[] decodedString = Base64.decode(mPaths.get(position).getImageBase64(), Base64.DEFAULT);
                         Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
                         String path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)+"/Share.png";
-                        OutputStream out = null;
+                        OutputStream out;
                         File file=new File(path);
                         try {
                             out = new FileOutputStream(file);

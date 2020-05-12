@@ -1,14 +1,10 @@
 package com.tradinos.drawyourpath.Sources;
-
 import android.app.Application;
-
 import com.tradinos.drawyourpath.Models.MyPath;
-
 import java.util.List;
-
 import androidx.lifecycle.LiveData;
 
-public class PathRepository {
+class PathRepository {
 
     private PathDao mPathDao;
     private LiveData<List<MyPath>> mAllPaths;
@@ -19,18 +15,18 @@ public class PathRepository {
         mAllPaths = mPathDao.getAlWords();
     }
 
-    public LiveData<List<MyPath>> getAllPaths(){
+    LiveData<List<MyPath>> getAllPaths(){
         return mAllPaths;
     }
 
 
-    public void insertPath(MyPath myPath){
+    void insertPath(MyPath myPath){
         PathRoomDatabase.databaseWriteExecutor.execute(() -> {
             mPathDao.insert(myPath);
         });
     }
 
-    public void deletePath(MyPath myPath){
+    void deletePath(MyPath myPath){
         PathRoomDatabase.databaseWriteExecutor.execute(() -> {
             mPathDao.delete(myPath);
         });
